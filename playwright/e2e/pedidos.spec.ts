@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { generateOrderCode } from '../support/helpers'
+import { OrderLockupPage} from '../support/pages/OrdersLockupPage'
+
 
 /// AAA - Arrange, Act, Assert
 
@@ -32,8 +34,8 @@ test.describe('Consultar Pedido', () => {
     }
     
     // Act
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.code)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.code)
     
     // Assert   
     await expect(page.getByTestId(`order-result-${order.code}`)).toMatchAriaSnapshot(`
@@ -91,8 +93,8 @@ test.describe('Consultar Pedido', () => {
       paymentMethod: 'À Vista'
     }
     // Act
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.code)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.code)
     
     // Assert   
     await expect(page.getByTestId(`order-result-${order.code}`)).toMatchAriaSnapshot(`
@@ -150,8 +152,8 @@ test.describe('Consultar Pedido', () => {
       paymentMethod: 'À Vista'
     }
     // Act
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.code)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.code)
     
     // Assert   
     await expect(page.getByTestId(`order-result-${order.code}`)).toMatchAriaSnapshot(`
@@ -197,8 +199,8 @@ test.describe('Consultar Pedido', () => {
     
       const order = generateOrderCode()
     
-      await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
-      await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+      const orderLockupPage = new OrderLockupPage(page)
+      await orderLockupPage.searchOrder(order)
     
       await expect(page.locator('#root')).toMatchAriaSnapshot(`
         - img
