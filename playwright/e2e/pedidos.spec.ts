@@ -18,12 +18,9 @@ test.describe('Consultar Pedido', () => {
 
   test('Deve consultar um pedido aprovado', async ({ page }) => {
 
-    // Test Data
-    // const order = 'VLO-9WB0DE'
-    
     const order = {
       code: 'VLO-9WB0DE',
-      status: 'APROVADO',
+      status: 'APROVADO' as const,
       color: 'Lunar White',
       wheelType: 'aero Wheels',
       customer: {
@@ -68,22 +65,14 @@ test.describe('Consultar Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `)
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-      await expect(statusBadge).toHaveClass(/bg-green-100/)
-      await expect(statusBadge).toHaveClass(/text-green-700/)
-
-      const statusIcon = statusBadge.locator('svg') 
-      expect(statusIcon).toHaveClass(/lucide-circle-check-big/)      
+    await orderLockupPage.expectStatusBadge(order.status)
   })
   
   test('Deve consultar um pedido reprovado', async ({ page }) => {
 
-    // Test Data
-    // const order = 'VLO-DLKVX6' 
     const order = {
       code: 'VLO-DLKVX6',
-      status: 'REPROVADO',
+      status: 'REPROVADO' as const,
       color: 'Midnight Black',
       wheelType: 'sport Wheels',
       customer: {
@@ -92,6 +81,7 @@ test.describe('Consultar Pedido', () => {
       },
       paymentMethod: 'À Vista'
     }
+
     // Act
     const orderLockupPage = new OrderLockupPage(page)
     await orderLockupPage.searchOrder(order.code)
@@ -127,22 +117,14 @@ test.describe('Consultar Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `)
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-      await expect(statusBadge).toHaveClass(/bg-red-100/)
-      await expect(statusBadge).toHaveClass(/text-red-700/)
-
-      const statusIcon = statusBadge.locator('svg') 
-      expect(statusIcon).toHaveClass(/lucide-circle-x/)
+    await orderLockupPage.expectStatusBadge(order.status)
   }) 
   
   test('Deve consultar um pedido em análise', async ({ page }) => {
 
-    // Test Data
-    // const order = 'VLO-DLKVX6' 
     const order = {
       code: 'VLO-3IIMWX',
-      status: 'EM_ANALISE',
+      status: 'EM_ANALISE' as const,
       color: 'Lunar White',
       wheelType: 'aero Wheels',
       customer: {
@@ -151,6 +133,7 @@ test.describe('Consultar Pedido', () => {
       },
       paymentMethod: 'À Vista'
     }
+
     // Act
     const orderLockupPage = new OrderLockupPage(page)
     await orderLockupPage.searchOrder(order.code)
@@ -186,28 +169,21 @@ test.describe('Consultar Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `)
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-      await expect(statusBadge).toHaveClass(/bg-amber-100/)
-      await expect(statusBadge).toHaveClass(/text-amber-700/)
-
-      const statusIcon = statusBadge.locator('svg') 
-      expect(statusIcon).toHaveClass(/lucide-clock/)
+    await orderLockupPage.expectStatusBadge(order.status)
   })
     
   test('Deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
     
-      const order = generateOrderCode()
-    
-      const orderLockupPage = new OrderLockupPage(page)
-      await orderLockupPage.searchOrder(order)
-    
-      await expect(page.locator('#root')).toMatchAriaSnapshot(`
-        - img
-        - heading "Pedido não encontrado" [level=3]
-        - paragraph: Verifique o número do pedido e tente novamente
-      `)
-    })
+    const order = generateOrderCode()
+  
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order)
+  
+    await expect(page.locator('#root')).toMatchAriaSnapshot(`
+      - img
+      - heading "Pedido não encontrado" [level=3]
+      - paragraph: Verifique o número do pedido e tente novamente
+    `)
+  })
     
 })
-
